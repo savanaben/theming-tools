@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+  <title>Art Theme Checker</title>
+
+  <link rel="stylesheet" href="default.css"/>
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+
+  <style>
+    .container {
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+    }
+
+    #results {
+      text-align: center;
+    }
+
+    #results img {
+      display: inline-block;
+      margin: 1rem;
+      vertical-align: middle;
+    }
+  </style>
+  <script>
+
+  var btnDefault, btnHigh, btnLow;
+
+  function themeDefault() {
+    btnDefault.addClass('btn-disabled');
+    btnHigh.removeClass('btn-disabled');
+    btnLow.removeClass('btn-disabled');
+    $('head .high-contrast-stylesheet').remove()
+    $('head .low-contrast-stylesheet').remove()
+  };
+  function themeHigh() {
+    btnDefault.removeClass('btn-disabled');
+    btnHigh.addClass('btn-disabled');
+    btnLow.removeClass('btn-disabled');
+    $('head .low-contrast-stylesheet').remove();
+    $('head').append('<link class="high-contrast-stylesheet" rel="stylesheet" href="high-contrast.css" />');
+  };
+  function themeLow() {
+    btnDefault.removeClass('btn-disabled');
+    btnHigh.removeClass('btn-disabled');
+    btnLow.addClass('btn-disabled');
+    $('head .high-contrast-stylesheet').remove();
+    $('head').append('<link class="low-contrast-stylesheet" rel="stylesheet" href="low-contrast.css" />');
+  };
+
+  function cancel(e) {
+    e.preventDefault();
+  }
+
+  function loadImgs(e) {
+    e.preventDefault();
+    $('#results').html('');
+    var i, files, reader, fn;
+    files = e.dataTransfer.files;
+    for (i=0;i<files.length;i++) {
+      reader = new FileReader();
+      fn = function(f) {
+        return function(e) {
+          var img;
+          img = document.createElement('img');
+          img.file = f;
+          img.src = this.result;
+          document.getElementById('results').appendChild(img);
+        };
+      };
+      reader.onloadend = fn(files[i]);
+      reader.readAsDataURL(files[i]);
+    }
+    return false;
+  }
+
+  $(function() {
+    var dz = $('html')[0];
+    dz.addEventListener('dragover', cancel, false);
+    dz.addEventListener('dragenter', cancel, false);
+    dz.addEventListener('drop', loadImgs, false);
+    btnDefault = $('#btnDefault').click(themeDefault);
+    btnHigh = $('#btnHigh').click(themeHigh);
+    btnLow = $('#btnLow').click(themeLow);
+  });
+
+  </script>
+
+</head>
+<body>
+
+<div class="container">
+  <h1>View graphics in different color themes</h1>
+  <p style="text-align: center">Drag graphics files here to add them to the page.</p>
+  <p style="text-align: center;">
+    <button id="btnDefault" class="btn btn-disabled">Default</button>
+    <button id="btnHigh" class="btn">High Contrast</button>
+    <button id="btnLow" class="btn">Low Contrast</button>
+  </p>
+  <div id="results">
+  </div>
+</div>
+</body>

@@ -1,0 +1,153 @@
+/*------------------------------------------------------------------------------
+SVG images
+------------------------------------------------------------------------------*/
+
+img[src$=".svg"], img[src^="data:image/svg"],
+img[src$=".jpeg"], img[src^="data:image/jpeg"],
+img[src$=".png"], img[src^="data:image/png"] {
+  filter: brightness(0.70) contrast(130%) !important;
+}
+
+
+/*------------------------------------------------------------------------------
+TYPOGRAPHY
+------------------------------------------------------------------------------*/
+
+html {
+  color: #fff;
+  background-color: #000; }
+
+/*------------------------------------------------------------------------------
+BUTTONS
+------------------------------------------------------------------------------*/
+
+.btn {
+  box-shadow: none;
+  border: 2px solid #ccc;
+  background-color: #444;
+  color: #fff; }
+  .btn:hover {
+    background-color: #777; }
+
+.btn.btn-special {
+  background-color: #143d66;
+  color: #fff;
+  border: 2px solid #3399ff; }
+  .btn.btn-special:hover {
+    background-color: #1f5c99; }
+
+.btn.btn-danger {
+  color: #fff;
+  background-color: #660000;
+  border: 2px solid #cc0000; }
+  .btn.btn-danger:hover {
+    background-color: #8f0000;
+  }
+
+.btn.btn-disabled {
+  background-color: #000;
+  color: #888;
+  border: 2px solid #444;
+}
+
+/*------------------------------------------------------------------------------
+MULTIPLE CHOICE
+------------------------------------------------------------------------------*/
+
+table.mc td {
+  border-top: 2px solid #999;
+  border-bottom: 2px solid #999;
+  background-color: #000; }
+
+table.mc tr:hover td {
+  border-top: 2px solid #add6ff;
+  border-bottom: 2px solid #add6ff; }
+  table.mc tr:hover td:first-of-type {
+    border-left: 2px solid #add6ff; }
+  table.mc tr:hover td:last-of-type {
+    border-right: 2px solid #add6ff;
+    border-left: 2px solid #add6ff; }
+
+table.mc tr.mc-choice-selected td {
+  border-top: 4px double #add6ff;
+  border-bottom: 4px double #add6ff; }
+  table.mc tr.mc-choice-selected td:first-of-type {
+    border-left: 4px double #add6ff;
+    border-right: 2px solid #add6ff; }
+  table.mc tr.mc-choice-selected td:last-of-type {
+    border-right: 4px double #add6ff;
+    border-left: 2px solid #add6ff; }
+
+table.mc tr.mc-choice-eliminated td {
+  color: rgba(256,256,256,0.3);
+  border-top: 2px solid rgba(256,256,256,0.3);
+  border-bottom: 2px solid rgba(256,256,256,0.3); }
+  table.mc tr.mc-choice-eliminated td:first-of-type {
+    background-color: #000;
+    border-left: 2px solid rgba(256,256,256,0.3);
+    border-right: 2px solid rgba(256,256,256,0.3); }
+  table.mc tr.mc-choice-eliminated td:last-of-type {
+    border-right: 2px solid rgba(256,256,256,0.3);
+    border-left: 2px solid rgba(256,256,256,0.3); }
+  table.mc tr.mc-choice-eliminated:hover td {
+    border-top: 2px solid rgba(256,256,256,0.3);
+    border-bottom: 2px solid rgba(256,256,256,0.3); }
+    table.mc tr.mc-choice-eliminated:hover td:first-of-type {
+      border-left: 2px solid rgba(256,256,256,0.3); }
+    table.mc tr.mc-choice-eliminated:hover td:last-of-type {
+      border-right: 2px solid rgba(256,256,256,0.3);
+      border-left: 2px solid rgba(256,256,256,0.3); }
+
+table.mc tr td:first-of-type {
+  background-color: #000;
+  border-left: 2px solid #999;
+  border-right: 2px solid #999; }
+
+table.mc tr td:last-of-type {
+  border-right: 2px solid #999;
+  border-left: 2px solid #999; }
+
+button.mc-eliminate-choice {
+  color: #ccc;
+  background-color: #000;
+  border: 1px solid #ccc;
+  box-shadow: none; }
+  button.mc-eliminate-choice:hover {
+    color: #fff;
+    border: 1px solid #fff; }
+
+/*------------------------------------------------------------------------------
+TEXT INPUTS
+------------------------------------------------------------------------------*/
+
+.text-input {
+  color: #fff;
+  border: 1px solid #fff;
+  background-color: #000; }
+
+.text-input:focus {
+  outline-color: #fff;
+}
+
+.text-input-single-line {
+  box-shadow: none; }
+
+.text-input-multi-line {
+  box-shadow: none; }
+
+/*------------------------------------------------------------------------------
+ZONES
+------------------------------------------------------------------------------*/
+
+/*------------------------------------------------------------------------------
+DRAG AND DROP
+------------------------------------------------------------------------------*/
+
+.draggable-container {
+  background-color: #444;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #bbb;
+  border-right: 1px solid #bbb;
+}
+

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Brightness Analyzer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/3.0.7/umd.min.js" integrity="sha512-/s6CoG5ITB6327e5PitHYHqmw+XS9ynpBQ0RJtDEHjGnqld6e4V6F5Up+Q+IuavD4Na4vfmKAkuanctzsiMA2Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      margin: 0 0 3rem 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    .container {
+      text-align: center;
+      width: 800px;
+    }
+    #drop-zone {
+      border: 2px dashed lightgray;
+      color: lightgray;
+    }
+    .dark-green {
+      color: rgb(79, 255, 79);
+    }
+    .dark-yellow {
+      color: rgb(255, 197, 50);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Image Brightness Analyzer</h1>
+    <div id="drop-zone" style=" height: 100px; color: rgb(174, 174, 174); text-align: center; padding: 20px; background-color: rgb(36, 36, 36);">
+      Drag and drop an image here (png, jpeg, svg)
+    </div>
+    <h3>Average Brightness: <span id="brightness-result">-</span>%</h3>
+    <p style="color: rgb(174, 174, 174); text-align: left;">Note - 0% = pure black, 100% = pure white. Average brightness calculations assume that transparent pixels/regions are black. Generally in the NAEP dark theme, the page background is black.</p>
+    <p id="threshold-message" class="dark-green"></p>
+    <div>
+      <p>Original:</p>
+      <img id="before-image" width="800" />
+    </div>
+    <div>
+      <p>With Filter (if applicable):</p>
+      <img id="after-image" width="800" />
+    </div>
+
+
+  <script>
+    const dropZone = document.getElementById("drop-zone");
+    const brightnessResult = document.getElementById("brightness-result");
+    const thresholdMessage = document.getElementById("threshold-message");
+    const beforeImage = document.getElementById("before-image");
+    const afterImage = document.getElementById("after-image");
+  
+function analyzeImage(canvas, context) {
+  const imageData = context.getImageData(0, 0, canvas.width, canvas.height).data;
+  let brightness = 0;
+  let totalPixels = 0;
+
+  for (let i = 0; i < imageData.length; i += 4) {
+    const a = imageData[i + 3];
+    if (a !== 0) {
+      const r = imageData[i];
+      const g = imageData[i + 1];
+      const b = imageData[i + 2];
+      brightness += (r + g + b) / 3;
+      totalPixels++;
+    }
+  }
+
+  const brightnessPercentage = totalPixels > 0 ? ((brightness / totalPixels) / 255 * 100).toFixed(2) : 0;
+  brightnessResult.textContent = brightnessPercentage;
+
+  if (brightnessPercentage > 60) {
+    thresholdMessage.textContent = "Image above 60% brightness threshold. Apply brightness filter in code.";
+    thresholdMessage.classList.remove("dark-green");
+    thresholdMessage.classList.add("dark-yellow");
+    applyImageFilter();
+  } else {
+    thresholdMessage.textContent = "Image below 60% threshold. No filter needed ✓";
+    thresholdMessage.classList.remove("dark-yellow");
+    thresholdMessage.classList.add("dark-green");
+    resetImageFilter();
+  }
+}
+
+  
+    function applyImageFilter() {
+      afterImage.style.filter = "brightness(0.70) contrast(130%)";
+    }
+  
+    function resetImageFilter() {
+      afterImage.style.filter = "";
+    }
+  
+    function updateBeforeAfterImages(src) {
+      beforeImage.src = src;
+      afterImage.src = src;
+    }
+  
+    function handleDrop(event) {
+  event.preventDefault();
+  event.stopPropagation();
+
+  const file = event.dataTransfer.files[0];
+  const reader = new FileReader();
+
+  reader.onload = (event) => {
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    if (file.type === "image/svg+xml") {
+      const img = new Image();
+      img.src = 'data:image/svg+xml;base64,' + btoa(event.target.result);
+
+      img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        // this code could Set a background color, if you wanted the calculation to factor transparent sections
+        context.fillStyle = "black";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the SVG on top of the white background
+        context.drawImage(img, 0, 0);
+        analyzeImage(canvas, context);
+        updateBeforeAfterImages(img.src);
+      };
+    } else {
+      const image = new Image();
+      image.src = event.target.result;
+
+      image.onload = () => {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.drawImage(image, 0, 0);
+        analyzeImage(canvas, context);
+        updateBeforeAfterImages(image.src);
+      };
+    }
+  };
+
+  if (file.type === "image/svg+xml") {
+    reader.readAsText(file);
+  } else {
+    reader.readAsDataURL(file);
+  }
+}
+
+
+  
+    function handleDragOver(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.dataTransfer.dropEffect = "copy";
+    }
+  
+    dropZone.addEventListener("dragover", handleDragOver, false);
+    dropZone.addEventListener("drop", handleDrop, false);
+  </script>
+  
+
+
+
+</body>
+</html>
