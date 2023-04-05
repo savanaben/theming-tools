@@ -19,6 +19,11 @@
       font-size: 1.5rem;
     }
 
+  .constrained-image {
+    max-width: 100%;
+    height: auto;
+  }
+
     #results {
       text-align: center;
     }
@@ -31,55 +36,78 @@
   </style>
   <script>
 
-  var btnDefault, btnHigh, btnLow;
+var btnDefault, btnHigh, btnLow, btnHighColor;
 
-  function themeDefault() {
-    btnDefault.addClass('btn-disabled');
-    btnHigh.removeClass('btn-disabled');
-    btnLow.removeClass('btn-disabled');
-    $('head .high-contrast-stylesheet').remove()
-    $('head .low-contrast-stylesheet').remove()
-  };
-  function themeHigh() {
-    btnDefault.removeClass('btn-disabled');
-    btnHigh.addClass('btn-disabled');
-    btnLow.removeClass('btn-disabled');
-    $('head .low-contrast-stylesheet').remove();
-    $('head').append('<link class="high-contrast-stylesheet" rel="stylesheet" href="high-contrast.css" />');
-  };
-  function themeLow() {
-    btnDefault.removeClass('btn-disabled');
-    btnHigh.removeClass('btn-disabled');
-    btnLow.addClass('btn-disabled');
-    $('head .high-contrast-stylesheet').remove();
-    $('head').append('<link class="low-contrast-stylesheet" rel="stylesheet" href="low-contrast.css" />');
-  };
+function themeDefault() {
+  btnDefault.addClass('btn-disabled');
+  btnHigh.removeClass('btn-disabled');
+  btnHighColor.removeClass('btn-disabled');
+  btnLow.removeClass('btn-disabled');
+  $('head .high-contrast-stylesheet').remove();
+  $('head .low-contrast-stylesheet').remove();
+  $('head .high-contrast-color-stylesheet').remove();
+};
+
+function themeHigh() {
+  btnDefault.removeClass('btn-disabled');
+  btnHigh.addClass('btn-disabled');
+  btnHighColor.removeClass('btn-disabled');
+  btnLow.removeClass('btn-disabled');
+  $('head .high-contrast-stylesheet').remove();
+  $('head .low-contrast-stylesheet').remove();
+  $('head .high-contrast-color-stylesheet').remove();
+  $('head').append('<link class="high-contrast-stylesheet" rel="stylesheet" href="high-contrast.css" />');
+};
+
+function themeHighColor() {
+  btnDefault.removeClass('btn-disabled');
+  btnHigh.removeClass('btn-disabled');
+  btnHighColor.addClass('btn-disabled');
+  btnLow.removeClass('btn-disabled');
+  $('head .high-contrast-stylesheet').remove();
+  $('head .low-contrast-stylesheet').remove();
+  $('head .high-contrast-color-stylesheet').remove();
+  $('head').append('<link class="high-contrast-color-stylesheet" rel="stylesheet" href="high-contrast-color.css" />');
+};
+
+function themeLow() {
+  btnDefault.removeClass('btn-disabled');
+  btnHigh.removeClass('btn-disabled');
+  btnHighColor.removeClass('btn-disabled');
+  btnLow.addClass('btn-disabled');
+  $('head .high-contrast-stylesheet').remove();
+  $('head .high-contrast-color-stylesheet').remove();
+  $('head .low-contrast-stylesheet').remove();
+  $('head').append('<link class="low-contrast-stylesheet" rel="stylesheet" href="low-contrast.css" />');
+};
 
   function cancel(e) {
     e.preventDefault();
   }
 
   function loadImgs(e) {
-    e.preventDefault();
-    $('#results').html('');
-    var i, files, reader, fn;
-    files = e.dataTransfer.files;
-    for (i=0;i<files.length;i++) {
-      reader = new FileReader();
-      fn = function(f) {
-        return function(e) {
-          var img;
-          img = document.createElement('img');
-          img.file = f;
-          img.src = this.result;
-          document.getElementById('results').appendChild(img);
-        };
+  e.preventDefault();
+  $('#results').html('');
+  var i, files, reader, fn;
+  files = e.dataTransfer.files;
+  for (i=0;i<files.length;i++) {
+    reader = new FileReader();
+    fn = function(f) {
+      return function(e) {
+        var img;
+        img = document.createElement('img');
+        img.file = f;
+        img.src = this.result;
+        img.classList.add('constrained-image'); // Apply the new class to the image
+        document.getElementById('results').appendChild(img);
       };
-      reader.onloadend = fn(files[i]);
-      reader.readAsDataURL(files[i]);
-    }
-    return false;
+    };
+    reader.onloadend = fn(files[i]);
+    reader.readAsDataURL(files[i]);
   }
+  return false;
+}
+
 
   $(function() {
     var dz = $('html')[0];
@@ -88,6 +116,7 @@
     dz.addEventListener('drop', loadImgs, false);
     btnDefault = $('#btnDefault').click(themeDefault);
     btnHigh = $('#btnHigh').click(themeHigh);
+    btnHighColor = $('#btnHighColor').click(themeHighColor);
     btnLow = $('#btnLow').click(themeLow);
   });
 
@@ -99,9 +128,12 @@
 <div class="container">
   <h1>View graphics in different color themes</h1>
   <p style="text-align: center">Drag graphics files here to add them to the page.</p>
+  <p style="text-align: left; margin: 0 3rem 0 3rem"><strong>Dark theme (Discrete's)</strong> = Current grayscale + invert discrete auto-theming method.</p>
+  <p style="text-align: left; margin: 0 3rem 0 3rem"><strong>Dark theme (SBT/retain color)</strong> = Applies an invert + hue rotate filter to retain color. This theming method can be applied to eliminate the need to create a variant dark theme image, and most often works for simpler diagramatic-type images (graphs, shapes, etc).</p>
   <p style="text-align: center;">
     <button id="btnDefault" class="btn btn-disabled">Default</button>
-    <button id="btnHigh" class="btn">High Contrast</button>
+    <button id="btnHigh" class="btn">Dark theme (Discrete's)</button>
+    <button id="btnHighColor" class="btn">Dark theme (SBT/retain color)</button>
     <button id="btnLow" class="btn">Low Contrast</button>
   </p>
   <div id="results">

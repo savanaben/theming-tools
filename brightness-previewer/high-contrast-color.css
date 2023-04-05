@@ -5,7 +5,7 @@ SVG images
 img[src$=".svg"], img[src^="data:image/svg"],
 img[src$=".jpeg"], img[src^="data:image/jpeg"],
 img[src$=".png"], img[src^="data:image/png"] {
-  filter: grayscale(100%) invert(1) !important;
+  filter: invert(1) hue-rotate(180deg) !important;
 }
 
 
