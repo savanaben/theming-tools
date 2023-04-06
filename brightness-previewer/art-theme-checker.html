@@ -36,16 +36,18 @@
   </style>
   <script>
 
-var btnDefault, btnHigh, btnLow, btnHighColor;
+var btnDefault, btnHigh, btnLow, btnHighColor, btnLowerBrightness;
 
 function themeDefault() {
   btnDefault.addClass('btn-disabled');
   btnHigh.removeClass('btn-disabled');
   btnHighColor.removeClass('btn-disabled');
   btnLow.removeClass('btn-disabled');
+  btnLowerBrightness.removeClass('btn-disabled');
   $('head .high-contrast-stylesheet').remove();
   $('head .low-contrast-stylesheet').remove();
   $('head .high-contrast-color-stylesheet').remove();
+  $('head .lower-brightness-stylesheet').remove();
 };
 
 function themeHigh() {
@@ -53,9 +55,11 @@ function themeHigh() {
   btnHigh.addClass('btn-disabled');
   btnHighColor.removeClass('btn-disabled');
   btnLow.removeClass('btn-disabled');
+  btnLowerBrightness.removeClass('btn-disabled');
   $('head .high-contrast-stylesheet').remove();
   $('head .low-contrast-stylesheet').remove();
   $('head .high-contrast-color-stylesheet').remove();
+  $('head .lower-brightness-stylesheet').remove();
   $('head').append('<link class="high-contrast-stylesheet" rel="stylesheet" href="high-contrast.css" />');
 };
 
@@ -64,9 +68,11 @@ function themeHighColor() {
   btnHigh.removeClass('btn-disabled');
   btnHighColor.addClass('btn-disabled');
   btnLow.removeClass('btn-disabled');
+  btnLowerBrightness.removeClass('btn-disabled');
   $('head .high-contrast-stylesheet').remove();
   $('head .low-contrast-stylesheet').remove();
   $('head .high-contrast-color-stylesheet').remove();
+  $('head .lower-brightness-stylesheet').remove();
   $('head').append('<link class="high-contrast-color-stylesheet" rel="stylesheet" href="high-contrast-color.css" />');
 };
 
@@ -75,10 +81,25 @@ function themeLow() {
   btnHigh.removeClass('btn-disabled');
   btnHighColor.removeClass('btn-disabled');
   btnLow.addClass('btn-disabled');
+  btnLowerBrightness.removeClass('btn-disabled');
   $('head .high-contrast-stylesheet').remove();
   $('head .high-contrast-color-stylesheet').remove();
+  $('head .lower-brightness-stylesheet').remove();
   $('head .low-contrast-stylesheet').remove();
   $('head').append('<link class="low-contrast-stylesheet" rel="stylesheet" href="low-contrast.css" />');
+};
+
+function lowerBrightness() {
+  btnDefault.removeClass('btn-disabled');
+  btnHigh.removeClass('btn-disabled');
+  btnHighColor.removeClass('btn-disabled');
+  btnLow.removeClass('btn-disabled');
+  btnLowerBrightness.addClass('btn-disabled');
+  $('head .high-contrast-stylesheet').remove();
+  $('head .low-contrast-stylesheet').remove();
+  $('head .high-contrast-color-stylesheet').remove();
+  $('head .lower-brightness-stylesheet').remove();
+  $('head').append('<link class="lower-brightness-stylesheet" rel="stylesheet" href="lower-brightness.css" />');
 };
 
   function cancel(e) {
@@ -109,16 +130,18 @@ function themeLow() {
 }
 
 
-  $(function() {
-    var dz = $('html')[0];
-    dz.addEventListener('dragover', cancel, false);
-    dz.addEventListener('dragenter', cancel, false);
-    dz.addEventListener('drop', loadImgs, false);
-    btnDefault = $('#btnDefault').click(themeDefault);
-    btnHigh = $('#btnHigh').click(themeHigh);
-    btnHighColor = $('#btnHighColor').click(themeHighColor);
-    btnLow = $('#btnLow').click(themeLow);
-  });
+$(function() {
+  var dz = $('html')[0];
+  dz.addEventListener('dragover', cancel, false);
+  dz.addEventListener('dragenter', cancel, false);
+  dz.addEventListener('drop', loadImgs, false);
+  btnDefault = $('#btnDefault').click(themeDefault);
+  btnHigh = $('#btnHigh').click(themeHigh);
+  btnHighColor = $('#btnHighColor').click(themeHighColor);
+  btnLow = $('#btnLow').click(themeLow);
+  btnLowerBrightness = $('#btnLowerBrightness').click(lowerBrightness); // Add event listener for the new button
+});
+
 
   </script>
 
@@ -127,16 +150,42 @@ function themeLow() {
 
 <div class="container">
   <h1>View graphics in different color themes</h1>
-  <p style="text-align: center">Drag graphics files here to add them to the page.</p>
-  <p style="text-align: left; margin: 0 3rem 0 3rem"><strong>Dark theme (Discrete's)</strong> = Current grayscale + invert discrete auto-theming method.</p>
-  <p style="text-align: left; margin: 0 3rem 0 3rem"><strong>Dark theme (SBT/retain color)</strong> = Applies an invert + hue rotate filter to retain color. This theming method can be applied to eliminate the need to create a variant dark theme image, and most often works for simpler diagramatic-type images (graphs, shapes, etc).</p>
+  <p style="text-align: center">Drag graphics files (png, svg, jpeg) into this page to test.</p>
+  <p style="text-align: left; margin: 0 3rem 0 3rem"><strong>Dark theme (Discrete's)</strong> = Current grayscale + invert filter discrete theming method. Only use this method for non-reading DIs (See Jim Pulaski).</p>
+  <p style="text-align: left; margin: 0 3rem 0 3rem"><strong>Dark theme (invert + color filter)</strong> = Applies an invert + hue rotate filter to retain color. This theming method can be applied to eliminate the need to create a variant dark theme image, and most often works for simpler diagramatic-type images (graphs, shapes, etc).</p>
+  <p style="text-align: left; margin: 0 3rem 0 3rem"><strong>Dark theme (brightness filter)</strong> = Applies a minor brightness reduction and contrast bump. This theming method can be applied to abstract images where a brightness reduction does not negatively impact image connotations.</p>
   <p style="text-align: center;">
     <button id="btnDefault" class="btn btn-disabled">Default</button>
     <button id="btnHigh" class="btn">Dark theme (Discrete's)</button>
-    <button id="btnHighColor" class="btn">Dark theme (SBT/retain color)</button>
-    <button id="btnLow" class="btn">Low Contrast</button>
+    <button id="btnHighColor" class="btn">Dark theme (invert + color filter)</button>
+    <button id="btnLowerBrightness" class="btn">Dark theme (brightness filter)</button>
+    <button id="btnLow" class="btn">Beige theme</button>
   </p>
   <div id="results">
   </div>
 </div>
 </body>
+
+
+
+<!DOCTYPE html>
+<html>
+  <body>
+    <video id="video" style="display: none;"></video>
+    <script>
+      const video = document.getElementById("video");
+
+      function hasAudio(videoElement, callback) {
+        videoElement.addEventListener("loadedmetadata", () => {
+          const hasAudioTrack = videoElement.audioTracks && videoElement.audioTracks.length > 0;
+          callback(hasAudioTrack);
+        });
+      }
+
+      video.src = "path/to/video/file.mp4";
+      hasAudio(video, (result) => {
+        console.log("Has audio:", result);
+      });
+    </script>
+  </body>
+</html>
