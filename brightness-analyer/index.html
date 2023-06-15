@@ -77,13 +77,13 @@ function analyzeImage(canvas, context) {
   const brightnessPercentage = totalPixels > 0 ? ((brightness / totalPixels) / 255 * 100).toFixed(2) : 0;
   brightnessResult.textContent = brightnessPercentage;
 
-  if (brightnessPercentage > 60) {
-    thresholdMessage.textContent = "Image above 60% brightness threshold. Apply brightness filter in code.";
+  if (brightnessPercentage > 65) {
+    thresholdMessage.textContent = "Image above 65% brightness threshold. Apply brightness filter in code.";
     thresholdMessage.classList.remove("dark-green");
     thresholdMessage.classList.add("dark-yellow");
     applyImageFilter();
   } else {
-    thresholdMessage.textContent = "Image below 60% threshold. No filter needed ✓";
+    thresholdMessage.textContent = "Image below 65% threshold. No filter needed ✓";
     thresholdMessage.classList.remove("dark-yellow");
     thresholdMessage.classList.add("dark-green");
     resetImageFilter();
